@@ -1,0 +1,21 @@
+#! /bin/sh
+
+export TAR_OPTIONS="-H pax"
+PATH=`pwd`/tests:`pwd`/src:$PATH
+
+./binary 8 9
+
+blocks="$(stat sparsefile --format %b)"
+test $blocks -eq 0 && {
+    echo "stat reported zero blocks!"
+    blocks="$(stat sparsefile --format %b)"
+
+    while test $blocks -eq 0
+    do
+        echo "still zero blocks"
+        blocks="$(stat sparsefile --format %b)"
+    done
+    echo "(mostly?) synced"
+}
+
+:
